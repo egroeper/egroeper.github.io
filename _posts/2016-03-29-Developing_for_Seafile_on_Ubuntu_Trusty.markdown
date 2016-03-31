@@ -2,7 +2,7 @@
 layout: post
 title:  "Developing for Seafile on Ubuntu Trusty"
 date:   2016-03-29 23:02:32 +0200
-categories: seafile dev python
+categories: [seafile, dev, python]
 ---
 
 ## Introduction
@@ -208,25 +208,41 @@ The script responsible for managing and running the tests is `seahubtests.sh`.
 To make seahubtests.sh work, I had to patch it:
 {% gist egroeper/9a1c2414607a9ac70674a783f0ca8995 %}
 
-Now we can init the test environment and run the tests for the first time:
+Now we can init the test environment:
 
 ```
 cd /data/seafile/seafile-server/seahub
 # setup tests
 sudo tests/seahubtests.sh init
-# run tests
-sudo tests/seahubtests.sh test
 ```
 
-I didn't manage some (most?) of the api tests to pass. My guess is, that I'm running into throttling issues although the `local_settings.py` created by `seahubtests.sh init` should fix that.  
-But most tests should pass now.
+<del>I didn't manage some (most?) of the api tests to pass. My guess is, that I'm running into throttling issues although the `local_settings.py` created by `seahubtests.sh init` should fix that.  
+But most tests should pass now.</del>
 
-My results was:
+<del>My results was:
 ```
 42 failed, 367 passed, 1 skipped, 6 xfailed in 271.62 seconds
 ```
+</del>
+
+Of course you need to restart Seafile (especially seahub) for the changes to take effect. After that you can run the tests for the first time:
+
+```
+# restart Seafile
+cd /data/seafile
+sudo seafile-admin stop
+sudo seafile-admin start
+
+# run tests
+cd /data/seafile/seafile-server/seahub
+sudo tests/seahubtests.sh test
+```
 
 You are ready to code. Have fun!
+
+
+
+**Update 2016-03-31:** Seems like my problems with the api tests were caused by omitting the restart of Seahub. My bad. Should have known that.
 
 ## Appendix
 
